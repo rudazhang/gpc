@@ -1,0 +1,59 @@
+# An R package for Gaussian process covariance prediction via separable transformation
+
+This is a prototypical implementation of *GPΣ* in the R programming language.
+For the original research article documenting the method, see [the Citation section](#citation).
+
+## Installation
+
+Option 1: Install the developing verion via `devtools`.
+
+``` R
+if (!("devtools" %in% installed.packages()[,"Package"])) {
+    install.packages(devtools)
+}
+devtools::install_github("rudazhang/gpc")
+```
+
+Option 2: Install from a bundled package.
+
+First download a bundled package from [releases](https://github.com/rudazhang/gpc/releases), then
+
+``` R
+## Run a line similar to the following.
+install.packages("~/Downloads/gpc_0.0.0.9000.tar.gz", type="source")
+```
+
+## Example Use
+
+After installing the package, you can load it via:
+
+``` R
+library(gpc)
+```
+
+Example scripts are included in `script/` under the installed directory. Find it via:
+
+``` R
+path <- system.file("script", package = "gpc")
+dir(path, full.names=TRUE)
+```
+
+
+## Citation
+
+<!-- - Ruda Zhang, Simon Mak, and David Dunson. -->
+<!--   Gaussian Process Subspace Regression for Model Reduction. -->
+<!--   arXiv, 2021. https://arxiv.org/abs/2107.04668 -->
+
+<!-- BibTeX citation: -->
+<!-- ``` bibtex -->
+<!-- @misc{ZhangRD2021gps, -->
+<!--   title={Gaussian Process Subspace Regression for Model Reduction}, -->
+<!--   author={Ruda Zhang and Simon Mak and David Dunson}, -->
+<!--   year={2021}, -->
+<!--   eprint={2107.04668}, -->
+<!--   archivePrefix={arXiv}, -->
+<!--   primaryClass={math.ST}, -->
+<!--   url={https://arxiv.org/abs/2107.04668}, -->
+<!-- } -->
+<!-- ``` -->

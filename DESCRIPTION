@@ -1,0 +1,19 @@
+Package: gpc
+Type: Package
+Title: Gaussian Process Covariance / PCA / SVD Prediction via Separable Transformation
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Ruda", family = "Zhang", role = c("aut", "cre"),
+           email = "rudazhan@gmail.com", comment = c(ORCID = "0000-0002-2899-1008"))
+Description: Functions for Gaussian Process covariance prediction (GPSigma),
+	     a method to approximate positive definite matrix-valued mappings using Gaussian process.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+ByteCompile: true
+Imports: 
+    Matrix
+Depends: 
+    R (>= 2.10)
