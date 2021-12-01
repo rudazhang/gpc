@@ -13,7 +13,7 @@ normalize <- function(x) x / sqrt(sum(x^2))
 #' @param x a set of points, either a length-n vector or an n-by-p matrix
 #' @param x0 a point, either a scalar or a length-p vector
 distvec <- function(x, x0) {
-    if (gpc::isMatrix(x)) {
+    if (isMatrix(x)) {
         dx <- x - rep(x0, each = nrow(x))
         dist <- apply(dx, 1, vecnorm)
     } else {
@@ -83,6 +83,30 @@ listMatrix2Array <- function(listMr) {
     vapply(listMr, function(x) as.matrix(x), matrix(NA_real_, nrow = nr, ncol = nc))
 }
 
+#' Dummy block product: Boxdot = [r_ij Box_ij]_{i,j = 1, ..., l}
+#' @note For the particular uses in this package,
+#' `Box` and `R` are assumed to be symmetric matrices.
+dummyBlockProd <- function(Box, R, ks) {
+    k <- nrow(Box)
+    l <- nrow(R)
+    stopifnot(sum(ks) == k)
+    ## stopifnot(all.equal(diag(R), rep(1, l)))
+    id0 <- c(0, cumsum(ks)[-l])
+    ## lsID <- purrr::map2(id0, ks, ~seq(.x + 1, .x + .y))
+    lsID <- lapply(seq(l), function(i) seq(id0[i] + 1, id0[i] + ks[i]))
+    ## NOTE: Can be made more efficient for symmetric matrices.
+    Boxdot <- matrix(NA_real_, k, k)
+    DTid <- data.table::CJ(i = seq(l), j = seq(l))
+    setBlock <- function(i, j) {
+        Boxdot[lsID[[i]], lsID[[j]]] <<- Box[lsID[[i]], lsID[[j]]] * R[i,j]
+        return(NULL)
+    }
+    ## purrr::pwalk(DTid, setBlock)
+    ## DTid[, lapply(seq(l^2), function(x) setBlock(i[x], j[x]))]
+    with(DTid, lapply(seq(l^2), function(x) setBlock(i[x], j[x])))
+    return(as(Boxdot, "dsyMatrix"))
+}
+
 ############################## Optimization ##############################
 #' Readable tolerance level for `optim()`.
 #' @param x Precision for optimization.
@@ -90,8 +114,8 @@ ToleranceLevel <- function(x) list(factr = 10^(15-x))
 
 #' Safely set negative (eigen-)values to zero.
 #' @param eigs A vector of real eigenvalues in decreasing order.
-safeNonNeg <- function(eigs) {
-    if (any(eigs / eigs[1] < -3 * .Machine$double.eps)) {
+safeNonNeg <- function(eigs, factor = 3) {
+    if (any(eigs / eigs[1] < - factor * .Machine$double.eps)) {
         message("Large negative eigenvalues")
         stop()
     }
